@@ -204,25 +204,22 @@ def test_eigen(data):
 
     return rotation
 
-def rotation_relative(angle, current_rotation):
+def rotation_relative(angle):
     '''
         对于当前姿态 绕基底坐标系的Z轴旋转指定度数
     '''
-    q_cur = Rotation.from_matrix(current_rotation).as_quat()
-
     rotation_axis = np.array([0,0,1])
     rotation_angle = np.radians(angle)
     logger.info(rotation_angle)
 
-    q_rotate = Rotation.from_rotvec(rotation_angle * rotation_axis).as_quat()
+    q_rotate = Rotation.from_rotvec(rotation_angle * rotation_axis)
     
-    logger.info(rotation_angle * rotation_axis)
+    new = Rotation.from_rotvec([0.404435, -3.10924, 0.0442371])
+    new_rotation =  q_rotate * new
 
-    q_new = q_cur * q_rotate
-
-    pose = Rotation.from_quat(q_new).as_rotvec()
-
-    return pose
+    tmp = Rotation.from_matrix(new_rotation).as_rotvec()
+    logger.info(tmp)
+    return 
 
 def MoveJoint(joint):
     '''
@@ -263,25 +260,27 @@ if __name__ == '__main__':
 
     '''
 
-    test_move()
+    # test_move()
 
     pose_data = [0.0257481, -0.439098, 0.0479494, 0.404435, -3.10924, 0.0442371]
     joint_data = [0.317696, -0.535186, 1.3059, 0.296916, 1.55977, 1.62965]
-    # MoveJoint(joint_data)
+    MoveJoint(joint_data)
 
     # 输出旋转矩阵
     # # pose_data = [0.29998247172195086, 0.15902083051142829, 0.23119962718596615, 3.1400748728138406, -0.001278210673984829, -0.0015324470036047781]
-    rotation = test_eigen(pose_data)
+    # rotation = test_eigen(pose_data)
 
     # 对于当前姿态 绕基底坐标系的Z轴旋转指定度数
-    new_pose = rotation_relative(10, rotation)
+    # new_pose = rotation_relative(10)
     
-    logger.info(new_pose)
-    pose_data[3] = new_pose[0]
-    pose_data[4] = new_pose[1]
-    pose_data[5] = new_pose[2]
-    logger.info(pose_data)
-    # MoveCart(pose_data)
+    # logger.info(new_pose)
+    # pose_data[3] = new_pose[0]
+    # pose_data[4] = new_pose[1]
+    # pose_data[5] = new_pose[2]
+    # logger.info(pose_data)
+    
+    new_pose_data = [0.0257481, -0.439098, 0.0479494, 0.391441, -3.01377, 0.567824]
+    # MoveCart(new_pose_data)
 
 
     # 测试姿态控制
